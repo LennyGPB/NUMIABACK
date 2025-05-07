@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  password        String?  // si login par mot de passe
+  provider        String?  // ex: "google", "apple", etc.
+  providerId       String? 
+  name            String
+  birthDate       DateTime
+  guideChoice     String?    // ex : "Le Sage", "La Guerrière"
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  isPremium      Boolean @default(false)
+  stripeCustomerId String?  // ID du client Stripe
+  iaTokens        Int      @default(10) 
+  lastTokenReset  DateTime @default(now())
+  role      String   @default("user")
+
+  // Numérologie
+  lifePathNumber      Int     // Chemin de vie
+  expressionNumber    Int?    // Nombre d’expression
+  soulNumber          Int?    // Nombre d’âme
+  personalYearNumber  Int     // Année personnelle
+  todayNumber         Int?    // Calculé chaque jour, optionnel en cache
+  lifePathMessage     String?
+
+
+  // Relations
+  guidances      Guidance[]
+  chats          ChatMessage[]
+  subscriptions  Subscription[]
+  draws          Draw[]
+
+  @@map("users")
+}
+
+model Guidance {
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  date        DateTime
+  numberOfDay Int
+  message     String
+  aiResponse  String
+
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, date])
+  @@map("guidances")
+}
+
+model ChatMessage {
+  id          String   @id @default(uuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  message     String
+  aiResponse  String
+  createdAt   DateTime @default(now())
+
+  @@map("chat_messages")
+}
+
+model Subscription {
+  id              String   @id @default(uuid())
+  user            User     @relation(fields: [userId], references: [id])
+  userId          String
+  stripeCustomerId String  @unique
+  stripeSubId      String?
+  isActive         Boolean @default(false)
+  startDate        DateTime?
+  endDate          DateTime?
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("subscriptions")
+}
+
+model VibrationCache {
+  id        String   @id @default(uuid())
+  number    Int
+  type      String
+  date      DateTime
+  words     String
+  createdAt DateTime @default(now())
+
+  @@unique([number, type, date]) 
+}
+
+model Draw {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  date      DateTime @default(now())
+  theme     String
+  numbers   String   // ex: "2,4,7"
+  response  String
+}
+

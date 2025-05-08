@@ -2,12 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateProfileDto } from 'src/auth/dto/update-profile.dto';
 import { calculateLifePathNumber, calculatePersonalYearNumber, calculateSoulNumber, calculateExpressionNumber } from 'src/utils/numerology.utils';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async getMe(userId: string) {
+  async getMe(userId: string): Promise<Partial<User>> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       select: {

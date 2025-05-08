@@ -8,7 +8,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private config: ConfigService, private prisma: PrismaService) {
     const secret = config.get<string>('JWT_SECRET') || process.env.JWT_SECRET;
-    console.log('🔐 JWT_SECRET =', secret); // <- très utile
 
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -25,7 +24,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       where: { id: payload.sub },
     });
 
-    if (!user) return null;
+    if (!user) {
+      throw new UnauthorizedException('Utilisateur non trouvé.');
+    }
 
     return {
       id: user.id,

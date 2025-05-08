@@ -11,6 +11,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
   imports: [
     PassportModule, // Nécessaire pour utiliser des stratégies comme JWT
     PrismaModule, // Module Prisma pour l'accès à la base de données
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

@@ -18,16 +18,16 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Post('guide-choice')
   async chooseGuide(
-    @CurrentUser() user: { userId: string },
+    @CurrentUser() user: { id: string },
     @Body() dto: ChooseGuideDto,
   ) {
-    return this.userService.chooseGuide(user.userId, dto.guide);
+    return this.userService.chooseGuide(user.id, dto.guide);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('profile')
-  async updateProfile(@CurrentUser() user: { userId: string },@Body() dto: UpdateProfileDto,) 
+  async updateProfile(@CurrentUser() user: { id: string },@Body() dto: UpdateProfileDto,) 
   {
-    return this.userService.updateProfile(user.userId, dto);
+    return this.userService.updateProfile(user.id, dto);
   }
 }

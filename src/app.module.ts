@@ -36,12 +36,13 @@ import { AdminModule } from './admin/admin.module';
     VibrationModule, 
     ScheduleModule.forRoot(), 
     CronModule, 
+    AdminModule,
     ThrottlerModule.forRoot([
       {
         ttl: 60, 
         limit: 15, 
       },
-    ]), AdminModule,
+    ]), 
   ],
   controllers: [AppController, CompatibilityController, RevenueCatController, VibrationController],
   providers: [AppService, AiService, CompatibilityService, VibrationService, CronService],

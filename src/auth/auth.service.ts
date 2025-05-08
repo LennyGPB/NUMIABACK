@@ -182,6 +182,7 @@ export class AuthService {
         });
       }
     
+      console.log('Token JWT généré avec ID :', user.id);
       const token = this.jwtService.sign({ sub: user.id });
     
       return {

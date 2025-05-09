@@ -11,10 +11,10 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   @Post('message')
   async sendMessage(
-    @CurrentUser() user: { userId: string },
+    @CurrentUser() user: { id: string },
     @Body() dto: SendMessageDto,
   ) {
-    return this.chatService.sendMessage(user.userId, dto.message);
+    return this.chatService.sendMessage(user.id, dto.message);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -29,7 +29,7 @@ export class ChatController {
 
   @UseGuards(JwtAuthGuard)
   @Delete('history')
-  async clearHistory(@CurrentUser() user: { userId: string }) {
-    return this.chatService.clearHistory(user.userId);
+  async clearHistory(@CurrentUser() user: { id: string }) {
+    return this.chatService.clearHistory(user.id);
   }
 }

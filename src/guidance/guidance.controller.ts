@@ -12,40 +12,40 @@ export class GuidanceController {
 
   @UseGuards(JwtAuthGuard)
   @Get('today')
-  async getTodayGuidance(@CurrentUser() user: { userId: string }) {
-    return this.guidanceService.getToday(user.userId);
+  async getTodayGuidance(@CurrentUser() user: { id: string }) {
+    return this.guidanceService.getToday(user.id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('history')
   async getHistory(
-    @CurrentUser() user: { userId: string },
+    @CurrentUser() user: { id: string },
     @Query('limit') limit?: string, // ex : /guidance/history?limit=5
   ) {
     const historyLimit = limit ? parseInt(limit) : 7;
-    return this.guidanceService.getHistory(user.userId, historyLimit);
+    return this.guidanceService.getHistory(user.id, historyLimit);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('question')
-  async askQuestion(@CurrentUser() user: { userId: string }, @Body() dto: AskQuestionDto,)
+  async askQuestion(@CurrentUser() user: { id: string }, @Body() dto: AskQuestionDto,)
   {
-    return this.guidanceService.askQuestion(user.userId, dto.question);
+    return this.guidanceService.askQuestion(user.id, dto.question);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('draw')
   async drawThematicGuidance(
-    @CurrentUser() user: { userId: string },
+    @CurrentUser() user: { id: string },
     @Body() dto: DrawGuidanceDto,
   ) {
-    return this.guidanceService.drawGuidance(user.userId, dto);
+    return this.guidanceService.drawGuidance(user.id, dto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('life-path')
-  async getLifePathPhrase(@CurrentUser() user: { userId: string }) {
-    return this.guidanceService.generateLifePathMessage(user.userId);
+  async getLifePathPhrase(@CurrentUser() user: { id: string }) {
+    return this.guidanceService.generateLifePathMessage(user.id);
   }
 
 }

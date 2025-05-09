@@ -29,9 +29,9 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Post('setup-profile')
   async setupProfile(
-    @CurrentUser() user: { userId: string },
+    @CurrentUser() user: { id: string },
     @Body() dto: SetupProfileDto
   ) {
-    return this.authService.setupProfile(user.userId, dto);
+    return this.authService.setupProfile(user.id, dto);
   }
 }

@@ -115,12 +115,12 @@ export class GuidanceService {
       },
     });
   
-    if (drawsToday >= 2) {
-      throw new BadRequestException({
-        code: 'DRAW_LIMIT_REACHED',
-        message: "Tu as déjà effectué 2 tirages aujourd’hui. Reviens demain 🌙",
-      });
-    }
+    // if (drawsToday >= 2) {
+    //   throw new BadRequestException({
+    //     code: 'DRAW_LIMIT_REACHED',
+    //     message: "Tu as déjà effectué 2 tirages aujourd’hui. Reviens demain 🌙",
+    //   });
+    // }
   
     // 🎲 2. Génération aléatoire des nombres (entre 1 et 9, sans doublon)
     const numbers: number[] = [];

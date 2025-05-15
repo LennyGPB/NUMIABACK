@@ -237,12 +237,12 @@ export class GuidanceService {
       },
     });
   
-     if (drawsToday >= 2) {
-      throw new BadRequestException({
-        code: 'DRAW_LIMIT_REACHED',
-        message: "Tu as déjà effectué 2 tirages aujourd’hui. Reviens demain 🌙",
-      });
-    }
+    //  if (drawsToday >= 2) {
+    //   throw new BadRequestException({
+    //     code: 'DRAW_LIMIT_REACHED',
+    //     message: "Tu as déjà effectué 2 tirages aujourd’hui. Reviens demain 🌙",
+    //   });
+    // }
 
     const numbers: number[] = [];
     while (numbers.length < nbNumbers) {

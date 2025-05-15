@@ -12,7 +12,7 @@ export class JournalController {
   @Post()
   async create( @CurrentUser() user: { id: string }, @Body() dto: CreateJournalEntryDto) 
   {
-    return this.journalService.createOrUpdateEntry(user.id, dto.content);
+    return this.journalService.createEntry(user.id, dto.content);
   }
 
   @UseGuards(JwtAuthGuard)

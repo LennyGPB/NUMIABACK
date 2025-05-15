@@ -132,5 +132,4 @@ model JournalPrivate {
   content   String
   date      DateTime @default(now())
 
-  @@unique([userId, date]) // Une seule entrée par jour par utilisateur
 }

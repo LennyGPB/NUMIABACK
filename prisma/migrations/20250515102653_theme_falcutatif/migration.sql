@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Draw" ALTER COLUMN "theme" DROP NOT NULL;

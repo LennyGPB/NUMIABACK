@@ -4,7 +4,7 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { GuidanceService } from './guidance.service';
 import { AskQuestionDto } from 'src/auth/dto/ask-question.dto';
 import { DrawGuidanceDto } from 'src/auth/dto/draw-guidance.dto';
-import { Throttle } from '@nestjs/throttler';
+import { PremiumGuard } from 'src/auth/guards/premium.guard';
 
 @Controller('guidance')
 export class GuidanceController {
@@ -26,14 +26,14 @@ export class GuidanceController {
     return this.guidanceService.getHistory(user.id, historyLimit);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PremiumGuard)
   @Post('question')
   async askQuestion(@CurrentUser() user: { id: string }, @Body() dto: AskQuestionDto,)
   {
     return this.guidanceService.askQuestion(user.id, dto.question);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PremiumGuard)
   @Post('draw')
   async drawThematicGuidance(
     @CurrentUser() user: { id: string },
@@ -48,4 +48,9 @@ export class GuidanceController {
     return this.guidanceService.generateLifePathMessage(user.id);
   }
 
+  @UseGuards(JwtAuthGuard, PremiumGuard)
+  @Get('tirage-cycle')
+  async tirageCycleInterieur(@CurrentUser() user: { id: string }) {
+    return this.guidanceService.tirageCycleInterieur(user.id);
+  }
 }

@@ -22,6 +22,12 @@ import { CronService } from './cron/cron.service';
 import { CronModule } from './cron/cron.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AdminModule } from './admin/admin.module';
+import { PushService } from './push/push.service';
+import { PushController } from './push/push.controller';
+import { PushModule } from './push/push.module';
+import { JournalController } from './journal/journal.controller';
+import { JournalService } from './journal/journal.service';
+import { JournalModule } from './journal/journal.module';
 
 
 @Module({
@@ -37,14 +43,16 @@ import { AdminModule } from './admin/admin.module';
     ScheduleModule.forRoot(), 
     CronModule, 
     AdminModule,
+    PushModule, 
     ThrottlerModule.forRoot([
       {
-        ttl: 60, 
-        limit: 15, 
+        ttl: 60000, 
+        limit: 20, 
       },
-    ]), 
+    ]), JournalModule,
+   
   ],
-  controllers: [AppController, CompatibilityController, RevenueCatController, VibrationController],
-  providers: [AppService, AiService, CompatibilityService, VibrationService, CronService],
+  controllers: [AppController, CompatibilityController, RevenueCatController, VibrationController, PushController, JournalController],
+  providers: [AppService, AiService, CompatibilityService, VibrationService, CronService, PushService, JournalService],
 })
 export class AppModule {}

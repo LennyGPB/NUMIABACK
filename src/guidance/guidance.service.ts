@@ -170,7 +170,6 @@ export class GuidanceService {
     };
   }
   
-
   async generateLifePathMessage(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -219,6 +218,75 @@ export class GuidanceService {
     };
   }
   
-  
+  async tirageCycleInterieur(userId: string) {
+    const nbNumbers = 3;
 
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const drawsToday = await this.prisma.draw.count({
+      where: {
+        userId,
+        date: {
+          gte: startOfDay,
+        },
+      },
+    });
+  
+     if (drawsToday >= 2) {
+      throw new BadRequestException({
+        code: 'DRAW_LIMIT_REACHED',
+        message: "Tu as déjà effectué 2 tirages aujourd’hui. Reviens demain 🌙",
+      });
+    }
+
+    const numbers: number[] = [];
+    while (numbers.length < nbNumbers) {
+      const n = Math.floor(Math.random() * 9) + 1;
+      if (!numbers.includes(n)) numbers.push(n);
+    }
+
+    const prompt = `
+    Tu es un guide spirituel et numérologue bienveillant.
+
+    L’utilisateur a tiré trois nombres représentant son cycle intérieur :
+
+    - Le premier représente le **passé récent** (ce qu’il quitte)
+    - Le second représente le **présent** (ce qu’il traverse)
+    - Le troisième représente la **leçon à intégrer** (ce vers quoi il tend)
+
+    Voici les nombres tirés : ${numbers.join(', ')}
+
+    Ta réponse doit :
+    - Être claire, douce et inspirante
+    - Rester simple à comprendre
+    - Comporter une courte introduction (1 phrase)
+    - Puis une lecture en 3 parties : Passé, Présent, Leçon
+    - Ne pas dépasser 6 à 8 phrases au total
+    - Éviter les métaphores floues ou le jargon mystique
+
+    Commence maintenant :`;
+
+    const aiResponse = await this.aiService.generateGuidanceFromPrompt(prompt);
+
+    await this.prisma.draw.create({
+      data: {
+        userId,
+        date: new Date(),
+        numbers: numbers.join(','),
+        response: aiResponse,
+      },
+    });
+
+     return {
+      numbers,
+      aiResponse,
+    };
+  
+  }
+  
 }

@@ -19,7 +19,7 @@ model User {
   email           String   @unique
   password        String?  // si login par mot de passe
   provider        String?  // ex: "google", "apple", etc.
-  providerId       String? 
+  providerId      String? 
   name            String
   birthDate       DateTime
   guideChoice     String?    // ex : "Le Sage", "La Guerrière"
@@ -38,13 +38,15 @@ model User {
   personalYearNumber  Int     // Année personnelle
   todayNumber         Int?    // Calculé chaque jour, optionnel en cache
   lifePathMessage     String?
-
+  cheminDeVie         String?    // Chemin de vie
 
   // Relations
   guidances      Guidance[]
   chats          ChatMessage[]
   subscriptions  Subscription[]
   draws          Draw[]
+  pushTokens     PushToken[]
+  dailyEntries   JournalPrivate[]
 
   @@map("users")
 }
@@ -107,8 +109,28 @@ model Draw {
   userId    String
   user      User     @relation(fields: [userId], references: [id])
   date      DateTime @default(now())
-  theme     String
+  theme     String?
   numbers   String   // ex: "2,4,7"
   response  String
 }
 
+model PushToken {
+  id        String   @id @default(cuid())
+  token     String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, token]) // Empêche les doublons exacts
+}
+
+model JournalPrivate {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  content   String
+  date      DateTime @default(now())
+
+  @@unique([userId, date]) // Une seule entrée par jour par utilisateur
+}

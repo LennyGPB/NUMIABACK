@@ -3,11 +3,13 @@ import { ChatService } from './chat.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { SendMessageDto } from 'src/auth/dto/send-message.dto';
+import { Throttle, ThrottlerModule } from '@nestjs/throttler';
 
 @Controller('chat')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
+  @Throttle({ default: { limit: 17, ttl: 60000 } })
   @UseGuards(JwtAuthGuard)
   @Post('message')
   async sendMessage(

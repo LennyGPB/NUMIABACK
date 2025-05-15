@@ -24,6 +24,12 @@ export class UserService {
         expressionNumber: true,
         iaTokens: true,
         lastTokenReset: true,
+        // pushTokens: {
+        //   select: {
+        //     id: true,
+        //     token: true,
+        //   },
+        // },
       },
     });
 

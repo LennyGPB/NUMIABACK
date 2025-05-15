@@ -277,6 +277,7 @@ export class GuidanceService {
       data: {
         userId,
         date: new Date(),
+        theme: 'cycle intérieur',
         numbers: numbers.join(','),
         response: aiResponse,
       },

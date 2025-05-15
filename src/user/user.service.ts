@@ -17,6 +17,7 @@ export class UserService {
         name: true,
         birthDate: true,
         lifePathNumber: true,
+        lifePathMessage: true,
         personalYearNumber: true,
         guideChoice: true,
         isPremium: true,

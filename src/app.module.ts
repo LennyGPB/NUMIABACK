@@ -28,6 +28,8 @@ import { PushModule } from './push/push.module';
 import { JournalController } from './journal/journal.controller';
 import { JournalService } from './journal/journal.service';
 import { JournalModule } from './journal/journal.module';
+import { ReseauService } from './reseau/reseau.service';
+import { ReseauModule } from './reseau/reseau.module';
 
 
 @Module({
@@ -49,10 +51,10 @@ import { JournalModule } from './journal/journal.module';
         ttl: 60000, 
         limit: 20, 
       },
-    ]), JournalModule,
+    ]), JournalModule, ReseauModule,
    
   ],
   controllers: [AppController, CompatibilityController, RevenueCatController, VibrationController, PushController, JournalController],
-  providers: [AppService, AiService, CompatibilityService, VibrationService, CronService, PushService, JournalService],
+  providers: [AppService, AiService, CompatibilityService, VibrationService, CronService, PushService, JournalService, ReseauService],
 })
 export class AppModule {}

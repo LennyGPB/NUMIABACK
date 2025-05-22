@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { calculateDayNumber } from '../utils/numerology.utils';
 import { AiService } from 'src/ai/ai.service';
 import { DrawGuidanceDto } from 'src/auth/dto/draw-guidance.dto';
+import { CheckInDto } from 'src/auth/dto/check-in.dto';
 
 @Injectable()
 export class GuidanceService {
@@ -35,9 +36,7 @@ export class GuidanceService {
 
     // 3. Calcul du nombre du jour
     const numberOfDay = calculateDayNumber(new Date(), user.lifePathNumber);
-
-    // 4. Générer un message temporaire (à remplacer par OpenAI)
-    const aiResponse = await this.aiService.generateGuidance(numberOfDay);
+    const aiResponse = await this.aiService.generateGuidance(numberOfDay, user.lifePathMessage ?? '');
 
     // 5. Enregistrement en base
     const guidance = await this.prisma.guidance.create({
@@ -143,7 +142,7 @@ export class GuidanceService {
     - Donne une introduction courte, poétique et apaisante (1 à 2 phrases max)
     - Puis interprète les nombres avec douceur, en lien avec le thème
     - Reste clair, fluide, sans excès de mysticisme
-    - Le tout en **6 phrases maximum**
+    - Le tout en **5 phrases maximum**
     
     Ta guidance doit inspirer, recentrer et éclairer.
     Commence maintenant :`;
@@ -288,6 +287,70 @@ export class GuidanceService {
       aiResponse,
     };
   
+  }
+
+  async checkIn(userId: string, dto: CheckInDto) {
+    const { mood } = dto;
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+  
+    if (!user) throw new NotFoundException('Utilisateur introuvable.');
+
+    const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+  
+    const checkInToday = await this.prisma.checkIn.count({
+      where: {
+        userId,
+        date: {
+          gte: startOfDay,
+        },
+      },
+    });
+
+    if (checkInToday >= 1) {
+      throw new BadRequestException({
+        code: 'DRAW_LIMIT_REACHED',
+        message: "Tu as déjà partagé ta pensée aujourd’hui. Reviens demain 🌙",
+      });
+    }
+
+    const prompt = `
+    Tu es un coach bienveillant et inspirant spécialisé en développement personnel, numérologie et psychologie positive.
+    Un utilisateur t'indique comment il se sent parmi une liste d'émotions simples : "Bien", "Calme", "Stressé", "Fatigué", "Confus", "Heureux" ou "Triste".
+
+    Ta mission est de lui proposer **un seul exercice immédiat**, simple, concret et réalisable en 1 à 3 minutes maximum, pour l’aider à **amplifier ou rééquilibrer** son état du moment.
+
+    L’exercice peut être basé sur :
+    - la respiration,
+    - la pleine conscience,
+    - l’écriture introspective,
+    - la visualisation guidée,
+    - ou une micro-action émotionnelle.
+
+    **Sois très clair, doux, et précis.** N’écris qu’un seul exercice. Utilise un ton empathique, moderne et accessible à tous. Ne donne pas de contexte ou d’explication longue. L'exercice doit être directement actionnable.
+
+    Voici l’émotion indiquée par l’utilisateur : **${mood}**
+
+    Propose l’exercice maintenant :`;
+
+    const aiResponse = await this.aiService.generateGuidanceFromPrompt(prompt);
+
+    await this.prisma.checkIn.create({
+      data: {
+        userId,
+        date: new Date(),
+        mood,
+        response: aiResponse,
+      },
+    });
+  
+    return {
+      mood,
+      aiResponse,
+    };
   }
   
 }

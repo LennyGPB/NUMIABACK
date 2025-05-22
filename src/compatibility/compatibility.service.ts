@@ -29,7 +29,7 @@ export class CompatibilityService {
 
     Formate ta réponse ainsi :
     Résumé : une phrase courte, poétique et synthétique sur la vibration de leur lien (max. 2 lignes, et mentionne la date de naissance relié au chemin de vie).
-    Détails : une explication inspirée de la symbolique de ces deux nombres, en 4 à 6 lignes maximum. Reste simple, fluide, sans jargon. Ne répète pas le résumé.
+    Détails : une explication inspirée de la symbolique de ces deux nombres, en 4 à 5 lignes maximum. Reste simple, fluide, sans jargon. Ne répète pas le résumé.
 
     Rappelle-toi : sois spirituel mais ancré, profond mais accessible. 
 

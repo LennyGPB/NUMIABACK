@@ -5,6 +5,7 @@ import { GuidanceService } from './guidance.service';
 import { AskQuestionDto } from 'src/auth/dto/ask-question.dto';
 import { DrawGuidanceDto } from 'src/auth/dto/draw-guidance.dto';
 import { PremiumGuard } from 'src/auth/guards/premium.guard';
+import { CheckInDto } from 'src/auth/dto/check-in.dto';
 
 @Controller('guidance')
 export class GuidanceController {
@@ -52,5 +53,11 @@ export class GuidanceController {
   @Get('tirage-cycle')
   async tirageCycleInterieur(@CurrentUser() user: { id: string }) {
     return this.guidanceService.tirageCycleInterieur(user.id);
+  }
+
+  @UseGuards(JwtAuthGuard, PremiumGuard)
+  @Post('checkIn')
+  async checkInEmotion(@CurrentUser() user: { id: string }, @Body() dto: CheckInDto,) {
+    return this.guidanceService.checkIn(user.id, dto);
   }
 }

@@ -8,13 +8,17 @@ import { PrismaService } from '../prisma/prisma.service';
 export class VibrationService {
   constructor(private prisma: PrismaService, private readonly openai: OpenAIApi) {}
 
-  async generateWords(dto: GenerateWordsDto): Promise<string> {
+  async generateWords(dto: GenerateWordsDto, userId: string): Promise<string> {
+     const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+    });
+          
+
     const { number, type } = dto;
   
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // pour ne comparer que la date
+    today.setHours(0, 0, 0, 0);
   
-    // 1. Vérifie le cache
     const existing = await this.prisma.vibrationCache.findFirst({
       where: {
         number,
@@ -24,7 +28,7 @@ export class VibrationService {
     });
   
     if (existing) {
-      return existing.words; // 🔁 On renvoie le cache
+      return existing.words; 
     }
   
     // 2. Sinon, appel OpenAI
@@ -33,7 +37,7 @@ export class VibrationService {
     }. Utilise un ton symbolique et évocateur. Ne donne rien d’autre que les trois mots.`;
   
     const response = await this.openai.createChatCompletion({
-      model: 'gpt-4',
+      model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'user',
@@ -45,7 +49,6 @@ export class VibrationService {
   
     const text = response.data.choices[0].message?.content?.trim() ?? '';
   
-    // 3. Stocke dans le cache
     await this.prisma.vibrationCache.create({
       data: {
         number,
@@ -53,6 +56,11 @@ export class VibrationService {
         date: today,
         words: text,
       },
+    });
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { todayNumber: number },
     });
   
     return text;

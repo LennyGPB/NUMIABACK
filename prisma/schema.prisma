@@ -47,6 +47,8 @@ model User {
   draws          Draw[]
   pushTokens     PushToken[]
   dailyEntries   JournalPrivate[]
+  checkIns       CheckIn[]
+  reseauEnergetiques ReseauEnergetique[]
 
   @@map("users")
 }
@@ -114,6 +116,15 @@ model Draw {
   response  String
 }
 
+model CheckIn {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  date      DateTime @default(now())
+  mood      String?
+  response  String
+}
+
 model PushToken {
   id        String   @id @default(cuid())
   token     String
@@ -131,5 +142,14 @@ model JournalPrivate {
   user      User     @relation(fields: [userId], references: [id])
   content   String
   date      DateTime @default(now())
-
 }
+
+model ReseauEnergetique {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  content   String
+  date      DateTime @default(now())
+  nombre    Int?
+}
+

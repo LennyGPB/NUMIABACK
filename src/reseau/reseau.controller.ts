@@ -29,4 +29,11 @@ export class ReseauController {
     {
         return this.reseauService.getReseau();
     }
+
+    @UseGuards(JwtAuthGuard, PremiumGuard)
+    @Get('phrasebyid')
+    async getPhraseById(@CurrentUser() user: { id: string })
+    {
+        return this.reseauService.getReseauById(user.id);
+    }
 }

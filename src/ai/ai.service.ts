@@ -39,11 +39,11 @@ export class AiService {
 
     **Exemples de structure attendue (ne mets pas d'éléments en gras ou autres) :**
 
-    🧭*Guidance :  
-    -> « Aujourd’hui, prends le temps de t’écouter sans te juger. Le silence intérieur éclaire parfois plus que les réponses. »
+    🧭 Guidance :  
+    ↪︎ « Aujourd’hui, prends le temps de t’écouter sans te juger. Le silence intérieur éclaire parfois plus que les réponses. »
 
     🎯 Défi :  
-    -> Note dans un carnet trois choses que tu ressens en ce moment, sans chercher à les expliquer.
+    ↪︎ Note dans un carnet trois choses que tu ressens en ce moment, sans chercher à les expliquer.
 
     ---
 

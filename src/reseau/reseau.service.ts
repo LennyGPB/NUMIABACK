@@ -91,21 +91,20 @@ export class ReseauService {
     }
 
     async getReseauById(id: string) {
-        const reseau = await this.prisma.reseauEnergetique.findUnique({
-            where: {
-                id,
-            },
-            select: {
-                content: true,
-                date: true,
-                nombre: true,
-            },
-        });
+    const reseau = await this.prisma.reseauEnergetique.findUnique({
+        where: { id },
+        select: {
+        content: true,
+        date: true,
+        nombre: true,
+        },
+    });
 
-        if (!reseau) {
-          throw new NotFoundException('Aucun réseau trouvé.');
-        }     
-
-        return reseau;
+    if (!reseau) {
+        throw new NotFoundException('Entrée non trouvée.');
     }
+
+    return reseau;
+    }
+
 }

@@ -7,6 +7,7 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 export class VibrationController {
   constructor(private readonly vibrationService: VibrationService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('words')
   async generateWords(@Body() dto: GenerateWordsDto, @CurrentUser() user: { id: string }) {
     const words = await this.vibrationService.generateWords(dto, user.id);
